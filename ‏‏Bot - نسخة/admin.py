@@ -300,19 +300,32 @@ def get_top_10_in_subject(supabase, subject_name):
     except Exception as e:
         return f"❌ حدث خطأ أثناء الحساب: {str(e)}"
 
-def get_top_n_students(supabase, n=5, return_data=False):
+def get_top_n_students(supabase, n=5, return_data=False, use_cache=True):
     """جلب أفضل N طلاب على الدفعة بناءً على المعدل العام
     
     Args:
         supabase: اتصال قاعدة البيانات
         n: عدد الأوائل المطلوب (افتراضي 5)
         return_data: إذا كان True، ترجع (text, data)، وإلا ترجع text فقط
+        use_cache: استخدام التخزين المؤقت (افتراضي True)
     
     Returns:
         رسالة منسقة بأفضل N طالب
         إذا كان return_data=True: (text, top_n_dataframe)
         وإلا: text فقط
     """
+    # محاولة جلب من الـ Cache
+    if use_cache:
+        try:
+            from cache_manager import cache
+            cache_key = f"top_students_{n}_{return_data}"
+            cached_result = cache.get(cache_key)
+            if cached_result is not None:
+                print(f"✅ Cache HIT: top_students_{n}")
+                return cached_result
+        except ImportError:
+            pass  # استمر بدون cache
+    
     try:
         all_data = []
         start = 0
@@ -380,9 +393,18 @@ def get_top_n_students(supabase, n=5, return_data=False):
             message += f"📊 المعدل: *{row['average_grade']:.2f}* (من {int(row['total_subjects'])} مواد)\n"
             message += "ـ" * 30 + "\n"
 
-        if return_data:
-            return message, top_n
-        return message
+        result = (message, top_n) if return_data else message
+        
+        # حفظ في الـ Cache
+        if use_cache:
+            try:
+                from cache_manager import cache
+                cache.set(cache_key, result, ttl_seconds=600)  # 10 دقائق
+                print(f"✅ Cache SET: top_students_{n}")
+            except:
+                pass
+        
+        return result
 
     except Exception as e:
         error_msg = f"❌ حدث خطأ أثناء الحساب: {str(e)}"

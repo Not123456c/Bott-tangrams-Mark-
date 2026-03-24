@@ -44,6 +44,8 @@ from backup_scheduler import initialize_backup_scheduler
 from storage_manager import SupabaseStorageManager
 from spam_protection import SpamProtection
 from connection_manager import configure_polling_with_safety, safe_db_operation
+from cache_manager import cache, get_cached_top_students, start_cache_cleanup
+from task_manager import task_manager, generate_image_async
 import json
 
 # ══════════════════════════════════════
@@ -111,6 +113,9 @@ set_supabase_client(supabase)
 # print("🔄 جاري تشغيل النسخ الاحتياطي التلقائي...")
 # backup_scheduler = initialize_backup_scheduler(supabase, backup_interval_hours=24)
 backup_scheduler = None
+
+# بدء تنظيف الـ Cache دورياً
+start_cache_cleanup(interval_minutes=10)
 
 # قائمة المستخدمين
 bot_users = set()
