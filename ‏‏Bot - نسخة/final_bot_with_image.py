@@ -48,6 +48,7 @@ from cache_manager import cache, get_cached_top_students, start_cache_cleanup
 from task_manager import task_manager, generate_image_async
 from instant_notifications import InstantNotificationSystem, setup_notification_commands
 from exam_schedule import ExamScheduleSystem, setup_exam_commands
+from usage_analytics import UsageAnalytics, setup_analytics_commands, AnalyticsMiddleware
 import json
 
 # ══════════════════════════════════════
@@ -145,7 +146,14 @@ exam_system.start()  # بدء نظام التذكيرات
 # إعداد أوامر الامتحانات
 setup_exam_commands(bot, exam_system, ADMIN_IDS)
 
-print("✅ تم تفعيل: الإشعارات الفورية + جدول الامتحانات")
+# نظام إحصائيات الاستخدام
+usage_analytics = UsageAnalytics(supabase)
+analytics_middleware = AnalyticsMiddleware(usage_analytics)
+
+# إعداد أوامر الإحصائيات
+setup_analytics_commands(bot, usage_analytics, ADMIN_IDS)
+
+print("✅ تم تفعيل: الإشعارات الفورية + جدول الامتحانات + إحصائيات الاستخدام")
 
 # قائمة المستخدمين
 bot_users = set()
@@ -1580,6 +1588,14 @@ def process_upload_file(msg):
 @bot.message_handler(func=lambda m: True)
 def handle_all(msg):
     save_user(msg.chat.id)
+    
+    # ═══════════════════════════════════════
+    # تسجيل الاستخدام في الإحصائيات
+    # ═══════════════════════════════════════
+    try:
+        analytics_middleware.log_message(msg)
+    except Exception as e:
+        print(f"⚠️ خطأ في تسجيل الإحصائيات: {e}")
     
     # ═══════════════════════════════════════
     # التحقق من الطلبات المتتالية (Spam Protection)
