@@ -46,6 +46,8 @@ from spam_protection import SpamProtection
 from connection_manager import configure_polling_with_safety, safe_db_operation
 from cache_manager import cache, get_cached_top_students, start_cache_cleanup
 from task_manager import task_manager, generate_image_async
+from instant_notifications import InstantNotificationSystem, setup_notification_commands
+from exam_schedule import ExamScheduleSystem, setup_exam_commands
 import json
 
 # ══════════════════════════════════════
@@ -116,6 +118,34 @@ backup_scheduler = None
 
 # بدء تنظيف الـ Cache دورياً
 start_cache_cleanup(interval_minutes=10)
+
+# ══════════════════════════════════════
+# تهيئة الأنظمة الجديدة
+# ══════════════════════════════════════
+
+# نظام الإشعارات الفورية (/notify)
+instant_notify = InstantNotificationSystem(
+    bot=bot,
+    supabase=supabase,
+    channel_username=CHANNEL_USERNAME
+)
+instant_notify.start(check_interval=60)  # فحص كل دقيقة
+
+# إعداد أوامر الإشعارات
+setup_notification_commands(bot, instant_notify)
+
+# نظام جدول الامتحانات
+exam_system = ExamScheduleSystem(
+    bot=bot,
+    supabase=supabase,
+    admin_ids=ADMIN_IDS
+)
+exam_system.start()  # بدء نظام التذكيرات
+
+# إعداد أوامر الامتحانات
+setup_exam_commands(bot, exam_system, ADMIN_IDS)
+
+print("✅ تم تفعيل: الإشعارات الفورية + جدول الامتحانات")
 
 # قائمة المستخدمين
 bot_users = set()

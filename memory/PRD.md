@@ -1,84 +1,63 @@
 # PRD - بوت النتائج الجامعية (Telegram)
 
 ## المشكلة الأصلية
-مراجعة وتدقيق بوت تيليجرام للنتائج الجامعية وتجهيزه لتحمل آلاف الطلاب.
+مراجعة وتدقيق بوت تيليجرام للنتائج الجامعية وإضافة ميزات جديدة.
 
 ## تاريخ آخر تحديث: 2026-01-24
-
----
-
-## هيكل البوت
-
-### التقنيات المستخدمة:
-- Python 3.x
-- pyTelegramBotAPI
-- Supabase (PostgreSQL)
-- Google Gemini AI
-- Pillow + Matplotlib
-
-### الوظائف الأساسية:
-1. البحث عن نتائج الطلاب (بالرقم/الاسم)
-2. توليد صور النتائج
-3. إحصائيات ورسوم بيانية
-4. نصائح ذكية (AI)
-5. قائمة الأوائل
-6. لوحة إدارة
-7. حماية من السبام
-8. نظام إشعارات
 
 ---
 
 ## ما تم تنفيذه ✅
 
 ### Phase 1 - إصلاحات الأخطاء:
-- [x] إصلاح ratings.py (إضافة letter key)
-- [x] إصلاح notifications.py (supabase client)
-- [x] إصلاح final_bot_with_image.py (تمرير supabase)
-- [x] إصلاح image_generator.py (حذف التكرار)
-- [x] إصلاح reports.py (مسارات Linux)
-- [x] إصلاح spam_protection.py (SQL)
-- [x] تحديث requirements.txt
+- [x] إصلاح ratings.py
+- [x] إصلاح notifications.py
+- [x] إصلاح final_bot_with_image.py
+- [x] إصلاح image_generator.py
+- [x] إصلاح reports.py
+- [x] إصلاح spam_protection.py
 
 ### Phase 2 - تحسينات الأداء:
-- [x] إنشاء cache_manager.py
-- [x] إنشاء task_manager.py
-- [x] تحسين get_top_n_students() مع Caching
-- [x] إنشاء database_setup.sql
-- [x] إنشاء database_rpc_functions.sql
+- [x] cache_manager.py
+- [x] task_manager.py
+- [x] database_rpc_functions.sql
+
+### Phase 3 - الميزات الجديدة:
+- [x] instant_notifications.py - إشعارات فورية /notify
+- [x] exam_schedule.py - جدول الامتحانات /exams
+- [x] webhook_server.py - نظام Webhooks
+- [x] admin_dashboard.py - لوحة تحكم ويب
+- [x] new_features_tables.sql - جداول SQL الجديدة
 
 ---
 
-## Backlog (للمستقبل)
+## الملفات المضافة
 
-### P0 - حرج:
-- [ ] اختبار البوت مع بيانات حقيقية
-- [ ] اختبار الأداء (Load Testing)
+| الملف | الوظيفة |
+|-------|---------|
+| instant_notifications.py | نظام الإشعارات الفورية |
+| exam_schedule.py | جدول الامتحانات + تذكيرات |
+| webhook_server.py | خادم Webhook |
+| admin_dashboard.py | لوحة تحكم ويب |
+| new_features_tables.sql | جداول SQL للميزات الجديدة |
+
+---
+
+## Backlog
 
 ### P1 - مهم:
-- [ ] الانتقال إلى Webhooks
+- [ ] اختبار الميزات الجديدة
 - [ ] إضافة Redis للـ Caching
-- [ ] إضافة Celery للمهام الثقيلة
+- [ ] Load Testing
 
 ### P2 - تحسينات:
-- [ ] لوحة تحكم ويب
 - [ ] تقارير أسبوعية تلقائية
 - [ ] دعم لغات متعددة
+- [ ] نظام إنجازات
 
 ---
 
-## الملفات الرئيسية
-
-| الملف | الوصف |
-|-------|-------|
-| final_bot_with_image.py | البوت الرئيسي |
-| admin.py | لوحة الإدارة |
-| cache_manager.py | نظام التخزين المؤقت |
-| task_manager.py | إدارة المهام |
-| spam_protection.py | حماية السبام |
-
----
-
-## المتطلبات للتشغيل
+## متطلبات التشغيل
 
 ```env
 BOT_TOKEN=xxx
@@ -86,5 +65,11 @@ SUPABASE_URL=xxx
 SUPABASE_KEY=xxx
 ADMIN_IDS=xxx
 CHANNEL_USERNAME=@xxx
-GEMINI_API_KEY=xxx (اختياري)
+GEMINI_API_KEY=xxx
+
+# جديد
+WEBHOOK_URL=https://domain/webhook
+WEBHOOK_SECRET=xxx
+ADMIN_USER=admin
+ADMIN_PASS=xxx
 ```
