@@ -29,12 +29,22 @@ def generate_pdf_report(student_id, student_name, father_name, stats, weak_subje
             except:
                 return str(text)
 
-        # تسجيل خط عربي
-        font_path = "C:\\Windows\\Fonts\\arial.ttf"
-        if not os.path.exists(font_path):
-            font_path = "C:\\Windows\\Fonts\\tahoma.ttf"
+        # تسجيل خط عربي - دعم Windows و Linux
+        font_paths = [
+            "C:\\Windows\\Fonts\\arial.ttf",
+            "C:\\Windows\\Fonts\\tahoma.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/truetype/noto/NotoSansArabic-Regular.ttf",
+            "/usr/share/fonts/truetype/freefont/FreeSans.ttf"
+        ]
+        
+        font_path = None
+        for path in font_paths:
+            if os.path.exists(path):
+                font_path = path
+                break
 
-        if os.path.exists(font_path):
+        if font_path and os.path.exists(font_path):
             pdfmetrics.registerFont(TTFont('ArabicFont', font_path))
             main_font = 'ArabicFont'
         else:

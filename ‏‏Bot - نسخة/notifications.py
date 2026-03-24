@@ -6,6 +6,14 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 import telebot
 
+# متغير عام للـ supabase client
+_supabase_client = None
+
+def set_supabase_client(supabase):
+    """تعيين عميل Supabase للاستخدام في الوحدة"""
+    global _supabase_client
+    _supabase_client = supabase
+
 def migrate_old_json_files(supabase):
     import json
     import os
@@ -33,10 +41,17 @@ def migrate_old_json_files(supabase):
 
 def subscribe_user(chat_id, student_id, supabase=None):
     """ربط حساب تليجرام برقم جامعي محدد لتلقي الإشعارات (حفظ في قاعدة البيانات)"""
-    if supabase is None:
+    global _supabase_client
+    
+    # استخدام الـ supabase الممرر أو العام
+    db = supabase if supabase is not None else _supabase_client
+    
+    if db is None:
+        print("⚠️ Warning: supabase client not available for subscribe_user")
         return
+    
     try:
-        supabase.table("user_subscriptions").upsert({
+        db.table("user_subscriptions").upsert({
             "chat_id": chat_id,
             "student_id": str(student_id)
         }).execute()

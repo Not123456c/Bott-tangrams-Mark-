@@ -8,23 +8,23 @@ def get_rating(grade):
     grade = float(grade) if grade else 0
     
     if grade >= 95:
-        return {'rating': 'A+', 'emoji': '⭐', 'description': 'ممتاز جداً'}
+        return {'letter': 'A+', 'rating': 'A+', 'emoji': '⭐', 'description': 'ممتاز جداً'}
     elif grade >= 90:
-        return {'rating': 'A', 'emoji': '⭐', 'description': 'ممتاز'}
+        return {'letter': 'A', 'rating': 'A', 'emoji': '⭐', 'description': 'ممتاز'}
     elif grade >= 85:
-        return {'rating': 'B+', 'emoji': '👍', 'description': 'جيد جداً'}
+        return {'letter': 'B+', 'rating': 'B+', 'emoji': '👍', 'description': 'جيد جداً'}
     elif grade >= 80:
-        return {'rating': 'B', 'emoji': '👍', 'description': 'جيد'}
+        return {'letter': 'B', 'rating': 'B', 'emoji': '👍', 'description': 'جيد'}
     elif grade >= 75:
-        return {'rating': 'C+', 'emoji': '📌', 'description': 'فوق الوسط'}
+        return {'letter': 'C+', 'rating': 'C+', 'emoji': '📌', 'description': 'فوق الوسط'}
     elif grade >= 70:
-        return {'rating': 'C', 'emoji': '📌', 'description': 'وسط'}
+        return {'letter': 'C', 'rating': 'C', 'emoji': '📌', 'description': 'وسط'}
     elif grade >= 65:
-        return {'rating': 'D+', 'emoji': '⚡', 'description': 'مقبول'}
+        return {'letter': 'D+', 'rating': 'D+', 'emoji': '⚡', 'description': 'مقبول'}
     elif grade >= 60:
-        return {'rating': 'D', 'emoji': '⚡', 'description': 'ضعيف'}
+        return {'letter': 'D', 'rating': 'D', 'emoji': '⚡', 'description': 'ضعيف'}
     else:
-        return {'rating': 'F', 'emoji': '❌', 'description': 'راسب'}
+        return {'letter': 'F', 'rating': 'F', 'emoji': '❌', 'description': 'راسب'}
 
 def grade_to_percentage(grade):
     """تحويل الدرجة إلى نسبة مئوية"""

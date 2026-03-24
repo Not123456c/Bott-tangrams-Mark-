@@ -119,16 +119,8 @@ def generate_result_image(student_id, student_name, father_name, marks, average)
     output_path = os.path.join(os.getcwd(), f"result_{student_id}.png")
     img.save(output_path)
     return output_path
-from PIL import Image, ImageDraw, ImageFont
-import arabic_reshaper
-from bidi.algorithm import get_display
-import time
-import os
 
-def prepare_text(text):
-    if not text: return ""
-    reshaped_text = arabic_reshaper.reshape(str(text))
-    return get_display(reshaped_text)
+import time
 
 def generate_top_students_image(top_data, title="أوائل الدفعة"):
     width, height = 1200, max(600, 300 + len(top_data) * 100)
@@ -139,11 +131,26 @@ def generate_top_students_image(top_data, title="أوائل الدفعة"):
     img = Image.new("RGB", (width, height), bg_color)
     draw = ImageDraw.Draw(img)
     
-    try:
-        font_large = ImageFont.truetype("arial.ttf", 60)
-        font_medium = ImageFont.truetype("arial.ttf", 40)
-        font_small = ImageFont.truetype("arial.ttf", 30)
-    except:
+    # تحميل الخطوط مع دعم Linux
+    font_paths = [
+        "arial.ttf",
+        "C:\\Windows\\Fonts\\arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/noto/NotoSansArabic-Regular.ttf"
+    ]
+    
+    font_large = font_medium = font_small = None
+    for path in font_paths:
+        if os.path.exists(path):
+            try:
+                font_large = ImageFont.truetype(path, 60)
+                font_medium = ImageFont.truetype(path, 40)
+                font_small = ImageFont.truetype(path, 30)
+                break
+            except:
+                continue
+    
+    if font_large is None:
         font_large = ImageFont.load_default()
         font_medium = ImageFont.load_default()
         font_small = ImageFont.load_default()

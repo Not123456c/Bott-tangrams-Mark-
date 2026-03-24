@@ -102,6 +102,10 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # تهيئة نظام الحماية من الطلبات المتتالية
 spam_protection = SpamProtection(supabase)
 
+# تهيئة وحدة الإشعارات مع supabase
+from notifications import set_supabase_client
+set_supabase_client(supabase)
+
 # بدء جدولة النسخ الاحتياطي التلقائي
 # ⚠️ تعطيل مؤقتاً - bucket "bot-storage" غير موجود في Supabase
 # print("🔄 جاري تشغيل النسخ الاحتياطي التلقائي...")
@@ -425,7 +429,7 @@ def send_student_result(chat_id, student_id):
         if os.path.exists(image_path):
             os.remove(image_path)
         # تسجيل الطالب في نظام الإشعارات
-        subscribe_user(chat_id, student_id)
+        subscribe_user(chat_id, student_id, supabase)
         
         # إنشاء لوحة المفاتيح مع الخيارات الإضافية
         markup = types.InlineKeyboardMarkup()

@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS blocked_users (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- جدول حوادث الرسائل المزعجة
+-- جدول حوادث الرسائل المزعجة (بدون FOREIGN KEY لتجنب مشاكل الإدراج)
 CREATE TABLE IF NOT EXISTS spam_incidents (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id BIGINT NOT NULL,
@@ -252,12 +252,47 @@ CREATE TABLE IF NOT EXISTS spam_incidents (
     status TEXT DEFAULT 'pending',
     admin_decision TEXT,
     resolved_at TIMESTAMP,
-    created_at TIMESTAMP DEFAULT NOW(),
-    FOREIGN KEY (user_id) REFERENCES blocked_users(user_id)
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- جدول اشتراكات المستخدمين
+CREATE TABLE IF NOT EXISTS user_subscriptions (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    chat_id BIGINT UNIQUE NOT NULL,
+    student_id TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- جدول الدرجات المعروفة (للإشعارات)
+CREATE TABLE IF NOT EXISTS known_grades (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    student_id TEXT UNIQUE NOT NULL,
+    grades_data JSONB,
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- جدول مستخدمي البوت
+CREATE TABLE IF NOT EXISTS bot_users (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    chat_id BIGINT UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- جدول اشتراكات القناة
+CREATE TABLE IF NOT EXISTS channel_subscriptions (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    chat_id BIGINT UNIQUE NOT NULL,
+    is_subscribed BOOLEAN DEFAULT FALSE,
+    subscription_date TIMESTAMP,
+    reminder_count INT DEFAULT 0,
+    last_reminder TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 -- إضافة فهارس للأداء الأفضل
 CREATE INDEX IF NOT EXISTS idx_blocked_users_active ON blocked_users(is_active);
 CREATE INDEX IF NOT EXISTS idx_spam_incidents_status ON spam_incidents(status);
 CREATE INDEX IF NOT EXISTS idx_request_log_user ON request_log(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_subscriptions_student ON user_subscriptions(student_id);
+CREATE INDEX IF NOT EXISTS idx_bot_users_chat ON bot_users(chat_id);
 """
